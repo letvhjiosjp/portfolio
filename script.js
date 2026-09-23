@@ -4,6 +4,9 @@
   'use strict';
   const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const animeApi = window.anime;
+  const canAnimateData = Boolean(animeApi && animeApi.animate && animeApi.stagger && !reducedMotion.matches);
+  if (canAnimateData) document.documentElement.classList.add('motion-enabled');
 
   // Pointer and keyboard share the same selection; touch keeps a selection.
   // Leaving a pointer region restores any keyboard focus still in that region.
@@ -121,6 +124,33 @@
   legendButtons.forEach(button => button.setAttribute('aria-pressed','false'));
   explore(legend, legendButtons, highlightMark, resetMatrix);
 
+  // Column exploration is separate from legend filtering: hover/focus follows the research field.
+  const matrixHeaders = [...table.querySelectorAll('thead th')];
+  function focusMatrixColumn(columnIndex) {
+    table.classList.add('has-column-focus');
+    table.querySelectorAll('tr').forEach(row => {
+      [...row.children].forEach((cell, index) => cell.classList.toggle('col-on', index === columnIndex));
+    });
+  }
+  function resetMatrixColumn() {
+    table.classList.remove('has-column-focus');
+    table.querySelectorAll('.col-on').forEach(cell => cell.classList.remove('col-on'));
+  }
+  matrixHeaders.forEach((header, index) => {
+    if (!index) return;
+    header.tabIndex = 0;
+    header.addEventListener('pointerenter', event => {
+      if (finePointer.matches && event.pointerType !== 'touch') focusMatrixColumn(index);
+    });
+    header.addEventListener('focus', () => focusMatrixColumn(index));
+  });
+  table.addEventListener('pointerleave', event => {
+    if (finePointer.matches && event.pointerType !== 'touch') resetMatrixColumn();
+  });
+  table.addEventListener('focusout', event => {
+    if (!table.contains(event.relatedTarget)) resetMatrixColumn();
+  });
+
   // Gallery purpose stays visible; focus/tap adds emphasis, never gates text.
   const gallery = document.querySelector('.gallery');
   const works = [...gallery.querySelectorAll('.g-item')];
@@ -128,9 +158,60 @@
     works.forEach(work => work.classList.toggle('is-active',work === selected));
   }, () => works.forEach(work => work.classList.remove('is-active')));
 
+  // Three one-time quantitative sequences. Text remains visible throughout.
+  if (canAnimateData && 'IntersectionObserver' in window) {
+    const { animate, stagger } = animeApi;
+    const dataEase = animeApi.eases && animeApi.eases.linear
+      ? animeApi.eases.linear(0, '0.72 55%', '0.72 68%', 1)
+      : 'linear';
+
+    function once(target, start, threshold) {
+      if (!target) return;
+      const observer = new IntersectionObserver(entries => {
+        if (!entries.some(entry => entry.isIntersecting)) return;
+        observer.disconnect();
+        start();
+      }, { threshold: threshold || 0.18, rootMargin: '0px 0px -5% 0px' });
+      observer.observe(target);
+    }
+
+    const dotfield = document.getElementById('dotfield');
+    once(dotfield, () => {
+      animate(dotfield.children, {
+        opacity: [0.08, 0.62],
+        scale: [0.25, 1],
+        duration: 820,
+        delay: stagger(12, { grid: [50, 36], axis: 'x' }),
+        ease: dataEase,
+        onComplete: () => dotfield.classList.add('is-complete')
+      });
+    }, 0.1);
+
+    const bars = document.getElementById('reliability-bars');
+    once(bars, () => {
+      animate(bars.querySelectorAll('.metric-primary'), { scaleX: [0, 1], duration: 700, ease: dataEase });
+      animate(bars.querySelectorAll('.metric-fallback'), { scaleX: [0, 1], duration: 360, delay: 640, ease: 'linear' });
+      animate(bars.querySelectorAll('.metric-company'), { scaleX: [0, 1], duration: 900, delay: 140, ease: dataEase, onComplete: () => bars.classList.add('is-complete') });
+    }, 0.35);
+
+    const slope = document.getElementById('slope-comparison');
+    const paths = slope ? [...slope.querySelectorAll('.slope-series path')] : [];
+    paths.forEach(path => path.setAttribute('pathLength', '1'));
+    once(slope, () => {
+      animate(slope.querySelectorAll('.slope-before,.slope-value-before,.slope-test'), { opacity: [0, 1], duration: 220, delay: stagger(55), ease: 'linear' });
+      animate(paths, { strokeDashoffset: [1, 0], duration: 820, delay: stagger(110, { start: 180 }), ease: dataEase });
+      animate(slope.querySelectorAll('.slope-after,.slope-value-after'), { opacity: [0, 1], duration: 260, delay: stagger(70, { start: 850 }), ease: 'linear' });
+    }, 0.25);
+
+    const framework = document.querySelector('.framework-feature');
+    once(framework, () => {
+      animate(framework.querySelectorAll('.hierarchy li'), { opacity: [0.25, 1], y: [5, 0], duration: 380, delay: stagger(85), ease: 'outQuad', onComplete: () => framework.classList.add('is-complete') });
+    }, 0.25);
+  }
+
   // Animate on arrival; off-screen content is never left hidden.
   if ('IntersectionObserver' in window && !reducedMotion.matches) {
-    const targets = [...document.querySelectorAll('.research-stage,.scale-feature,.framework-feature,.g-item')];
+    const targets = [...document.querySelectorAll('.research-stage,.g-item')];
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (!entry.isIntersecting) return;

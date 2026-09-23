@@ -317,6 +317,19 @@
 <p>A second method now re-reads any page the first one returns empty, before that page is accepted as genuinely unreadable.</p>
 </div>
 <div class="issue-visual">
+<div class="reliability-bars" id="reliability-bars" role="img" aria-label="Two separate measures: at page level, 11.15 percent of pages were recovered through fallback extraction; at company level, 65.2 percent, or 1,170 of 1,795 companies, required fallback extraction for at least one page.">
+<div class="metric-bar" data-value="11.15">
+<div class="metric-heading"><span>Page level</span><strong>11.15%</strong></div>
+<p>20,735 of 185,893 pages recovered through fallback extraction</p>
+<div class="metric-track" aria-hidden="true"><span class="metric-primary"></span><span class="metric-fallback"></span></div>
+<div class="metric-key"><span>88.85% primary extraction</span><span>11.15% fallback recovered</span></div>
+</div>
+<div class="metric-bar" data-value="65.2">
+<div class="metric-heading"><span>Company level</span><strong>65.2%</strong></div>
+<p>1,170 of 1,795 companies required fallback on at least one page</p>
+<div class="metric-track" aria-hidden="true"><span class="metric-company"></span></div>
+</div>
+</div>
 <div class="tickrow">
 <p class="tick-label">Primary extraction</p>
 <div aria-hidden="true" class="ticks" id="ticks-primary"><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="miss"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="miss"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="miss"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="miss"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="miss"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="miss"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="miss"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="miss"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="miss"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="miss"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="miss"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span></div>
@@ -325,9 +338,25 @@
 <p class="tick-label">After fallback</p>
 <div aria-hidden="true" class="ticks" id="ticks-fallback"><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="rec"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="rec"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="rec"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="rec"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="rec"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="rec"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="rec"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="rec"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="rec"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="rec"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span><span class="rec"></span><span class=""></span><span class=""></span><span class=""></span><span class=""></span></div>
 </div>
-<p class="issue-evidence">Each mark ≈ 1% of pages (rounded visual). <strong>11.15%</strong> of 185,893 pages were recovered by the fallback; <strong>65.2%</strong> of 1,795 companies needed it on at least one page.</p>
-<p class="issue-evidence issue-evidence-sub">Selected test cases: ~64–74% of pages unreadable → ~0–0.5%.</p>
 </div>
+<figure class="slope-comparison" id="slope-comparison">
+<figcaption><span>Selected extraction tests</span>Unreadable page share before and after the fallback method.</figcaption>
+<svg viewBox="0 0 1300 400" role="img" aria-labelledby="slope-title slope-desc">
+<title id="slope-title">Selected extraction tests before and after fallback extraction</title>
+<desc id="slope-desc">Test A decreased from 74.4 percent unreadable to 0.5 percent. Test B decreased from 64.6 percent to zero percent. Test C decreased from 54.5 percent to zero percent.</desc>
+<text class="slope-axis-title" x="164" y="44">Before fallback</text><text class="slope-axis-title slope-axis-right" x="1136" y="44">After fallback</text>
+<line class="slope-guide" x1="190" x2="190" y1="74" y2="354"></line><line class="slope-guide" x1="1110" x2="1110" y1="74" y2="354"></line>
+<g class="slope-series slope-a"><path d="M190 102 C480 102 820 320 1110 320"></path><circle class="slope-before" cx="190" cy="102" r="7"></circle><circle class="slope-after" cx="1110" cy="320" r="7"></circle><text class="slope-test" x="40" y="108">Test A</text><text class="slope-value slope-value-before" x="174" y="91">74.4%</text><text class="slope-value slope-value-after" x="1126" y="326">0.5%</text></g>
+<g class="slope-series slope-b"><path d="M190 162 C480 162 820 338 1110 338"></path><circle class="slope-before" cx="190" cy="162" r="7"></circle><circle class="slope-after" cx="1110" cy="338" r="7"></circle><text class="slope-test" x="40" y="168">Test B</text><text class="slope-value slope-value-before" x="174" y="151">64.6%</text><text class="slope-value slope-value-after" x="1126" y="344">0%</text></g>
+<g class="slope-series slope-c"><path d="M190 222 C480 222 820 356 1110 356"></path><circle class="slope-before" cx="190" cy="222" r="7"></circle><circle class="slope-after" cx="1110" cy="356" r="7"></circle><text class="slope-test" x="40" y="228">Test C</text><text class="slope-value slope-value-before" x="174" y="211">54.5%</text><text class="slope-value slope-value-after" x="1126" y="362">0%</text></g>
+</svg>
+<div class="slope-mobile" aria-hidden="true">
+<div class="slope-mobile-head"><span>Before fallback</span><span>After fallback</span></div>
+<div><strong>Test A · 74.4%</strong><i></i><strong>0.5%</strong></div>
+<div><strong>Test B · 64.6%</strong><i></i><strong>0%</strong></div>
+<div><strong>Test C · 54.5%</strong><i></i><strong>0%</strong></div>
+</div>
+</figure>
 </div>
 
 <div class="issue">
@@ -429,6 +458,7 @@
 
 
 
+<script src="vendor/anime.umd.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
