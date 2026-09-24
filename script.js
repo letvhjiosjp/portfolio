@@ -40,6 +40,7 @@
     });
   }
 
+  if (document.querySelector('.artifact-universe')) {
   const universe = document.querySelector('.artifact-universe');
   const hero = document.querySelector('.hero-grid');
   const artifacts = [...document.querySelectorAll('[data-artifact]')];
@@ -79,7 +80,9 @@
   const updateHint = () => { hint.textContent = finePointer.matches ? 'Hover or focus to explore' : 'Tap to explore'; };
   updateHint();
   finePointer.addEventListener('change', updateHint);
+  }
 
+  if (document.getElementById('journey-stations')) {
   const journey = document.getElementById('journey-stations');
   journey.classList.add('is-enhanced');
   const stations = [...journey.querySelectorAll('.station')];
@@ -103,6 +106,7 @@
     detail.innerHTML = overview;
   }
   explore(journey, stations, selectStation, resetJourney);
+  }
 
   // Source matrix: the original cell values are never mutated.
   const table = document.getElementById('matrix');
@@ -153,7 +157,7 @@
 
   // Gallery purpose stays visible; focus/tap adds emphasis, never gates text.
   const gallery = document.querySelector('.gallery');
-  const works = [...gallery.querySelectorAll('.g-item')];
+  const works = gallery ? [...gallery.querySelectorAll('.g-item')] : [];
   explore(gallery, works, selected => {
     works.forEach(work => work.classList.toggle('is-active',work === selected));
   }, () => works.forEach(work => work.classList.remove('is-active')));
@@ -232,5 +236,28 @@
     reducedMotion.addEventListener('change', () => {
       if (reducedMotion.matches) targets.forEach(target => target.classList.remove('is-entering'));
     });
+  }
+  // Hero portrait: gentle pointer depth on fine pointers only; never with reduced motion.
+  const portrait = document.querySelector('.portrait-comp');
+  const heroIntro = document.querySelector('.hero-intro');
+  if (portrait && heroIntro) {
+    let frame = 0;
+    const reset = () => ['--px','--py','--fx','--fy','--fr'].forEach(name => portrait.style.removeProperty(name));
+    heroIntro.addEventListener('pointermove', event => {
+      if (!finePointer.matches || reducedMotion.matches || event.pointerType !== 'mouse') return;
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const box = heroIntro.getBoundingClientRect();
+        const nx = Math.max(-1, Math.min(1, ((event.clientX - box.left) / box.width - .5) * 2));
+        const ny = Math.max(-1, Math.min(1, ((event.clientY - box.top) / box.height - .5) * 2));
+        portrait.style.setProperty('--px', `${(nx * 4).toFixed(2)}px`);
+        portrait.style.setProperty('--py', `${(ny * 4).toFixed(2)}px`);
+        portrait.style.setProperty('--fx', `${(nx * -8).toFixed(2)}px`);
+        portrait.style.setProperty('--fy', `${(ny * -8).toFixed(2)}px`);
+        portrait.style.setProperty('--fr', `${(nx * 1.2).toFixed(2)}deg`);
+      });
+    });
+    heroIntro.addEventListener('pointerleave', () => { cancelAnimationFrame(frame); reset(); });
+    reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) reset(); });
   }
 })();
